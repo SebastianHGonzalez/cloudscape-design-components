@@ -307,4 +307,63 @@ describe('value', () => {
       await expect(wrapper.getElement()).toValidateA11y();
     });
   });
+
+  describe('generic value types', () => {
+    enum MyOptionValue {
+      ONE = 'val1',
+      TWO = 'val2',
+    }
+
+    it('should infer ChangeDetail type', () => {
+      const { rerender } = renderRadioGroup(
+        <RadioGroup
+          value={null}
+          items={[
+            { value: MyOptionValue.ONE, label: 'option 1' },
+            { value: MyOptionValue.TWO, label: 'option 2' },
+          ]}
+          onChange={({ detail }) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const newValue: MyOptionValue = detail.value;
+          }}
+        />
+      );
+
+      rerender(
+        <RadioGroup
+          value={null}
+          items={[{ value: MyOptionValue.ONE, label: 'option 1' }]}
+          onChange={({ detail }) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const newValue: MyOptionValue.ONE = detail.value;
+          }}
+        />
+      );
+
+      rerender(
+        <RadioGroup
+          value={null}
+          items={[{ value: 'someVal', label: 'option 1' }]}
+          onChange={({ detail }) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const newValue: 'someVal' = detail.value;
+          }}
+        />
+      );
+
+      rerender(
+        <RadioGroup
+          value={null}
+          items={[
+            { value: 'someVal', label: 'option 1' },
+            { value: 'otherVal', label: 'option 1' },
+          ]}
+          onChange={({ detail }) => {
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const newValue: 'someVal' | 'otherVal' = detail.value;
+          }}
+        />
+      );
+    });
+  });
 });

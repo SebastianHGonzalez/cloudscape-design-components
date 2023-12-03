@@ -9,14 +9,14 @@ import { useVisualRefresh } from '../internal/hooks/use-visual-mode';
 import { RadioGroupProps } from './interfaces';
 import styles from './styles.css.js';
 
-interface RadioButtonProps extends RadioGroupProps.RadioButtonDefinition {
+interface RadioButtonProps<TValue extends string = string> extends RadioGroupProps.RadioButtonDefinition<TValue> {
   name: string;
   checked: boolean;
-  onChange?: NonCancelableEventHandler<RadioGroupProps.ChangeDetail>;
+  onChange?: NonCancelableEventHandler<RadioGroupProps.ChangeDetail<TValue>>;
 }
 
-export default React.forwardRef(function RadioButton(
-  { name, label, value, checked, description, disabled, controlId, onChange }: RadioButtonProps,
+function RadioButton<TValue extends string>(
+  { name, label, value, checked, description, disabled, controlId, onChange }: RadioButtonProps<TValue>,
   ref: React.Ref<HTMLInputElement>
 ) {
   const isVisualRefresh = useVisualRefresh();
@@ -74,4 +74,8 @@ export default React.forwardRef(function RadioButton(
       }
     />
   );
-});
+}
+
+export default React.forwardRef(RadioButton) as <TValue extends string>(
+  props: RadioButtonProps<TValue> & { ref?: React.ForwardedRef<HTMLInputElement> }
+) => ReturnType<typeof RadioButton>;

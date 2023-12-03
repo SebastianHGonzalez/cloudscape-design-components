@@ -5,7 +5,7 @@ import { BaseComponentProps } from '../internal/base-component';
 import { NonCancelableEventHandler } from '../internal/events';
 import { FormFieldControlProps } from '../internal/context/form-field-context';
 
-export interface RadioGroupProps extends BaseComponentProps, FormFieldControlProps {
+export interface RadioGroupProps<TValue extends string> extends BaseComponentProps, FormFieldControlProps {
   /**
    * Specify a custom name for the radio buttons. If not provided, the radio group generates a random name.
    */
@@ -15,7 +15,7 @@ export interface RadioGroupProps extends BaseComponentProps, FormFieldControlPro
    * Sets the value of the selected radio button.
    * If you want to clear the selection, use `null`.
    */
-  value: string | null;
+  value: TValue | null;
 
   /**
    * Specifies an array of radio buttons to display. Each of these objects have the following properties:
@@ -27,7 +27,7 @@ export interface RadioGroupProps extends BaseComponentProps, FormFieldControlPro
    * - `controlId` (string) - (Optional) Sets the ID of the internal input. You can use it to relate a label element's `for` attribute to this control.
    *        In general it's not recommended to set this because the ID is automatically set by the radio group component.
    */
-  items?: ReadonlyArray<RadioGroupProps.RadioButtonDefinition>;
+  items?: ReadonlyArray<RadioGroupProps.RadioButtonDefinition<TValue>>;
 
   /**
    * Adds `aria-label` to the group. If you are using this form element within a form field,
@@ -49,7 +49,7 @@ export interface RadioGroupProps extends BaseComponentProps, FormFieldControlPro
   /**
    * Called when the user selects a different radio button. The event `detail` contains the current `value`.
    */
-  onChange?: NonCancelableEventHandler<RadioGroupProps.ChangeDetail>;
+  onChange?: NonCancelableEventHandler<RadioGroupProps.ChangeDetail<TValue>>;
 
   /**
    * @deprecated Has no effect.
@@ -58,16 +58,16 @@ export interface RadioGroupProps extends BaseComponentProps, FormFieldControlPro
 }
 
 export namespace RadioGroupProps {
-  export interface RadioButtonDefinition {
-    value: string;
+  export interface RadioButtonDefinition<TValue extends string = string> {
+    value: TValue;
     label: React.ReactNode;
     description?: React.ReactNode;
     disabled?: boolean;
     controlId?: string;
   }
 
-  export interface ChangeDetail {
-    value: string;
+  export interface ChangeDetail<TValue extends string> {
+    value: TValue;
   }
 
   export interface Ref {

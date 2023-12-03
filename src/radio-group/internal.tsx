@@ -11,59 +11,59 @@ import { useUniqueId } from '../internal/hooks/use-unique-id';
 import { InternalBaseComponentProps } from '../internal/hooks/use-base-component';
 import useRadioGroupForwardFocus from '../internal/hooks/forward-focus/radio-group';
 
-type InternalRadioGroupProps = RadioGroupProps & InternalBaseComponentProps;
+type InternalRadioGroupProps<TValue extends string> = RadioGroupProps<TValue> & InternalBaseComponentProps;
 
-const InternalRadioGroup = React.forwardRef(
-  (
-    {
-      name,
-      value,
-      items,
-      ariaLabel,
-      ariaRequired,
-      ariaControls,
-      onChange,
-      __internalRootRef = null,
-      ...props
-    }: InternalRadioGroupProps,
-    ref: React.Ref<RadioGroupProps.Ref>
-  ) => {
-    const { ariaDescribedby, ariaLabelledby } = useFormFieldContext(props);
-    const baseProps = getBaseProps(props);
-    const generatedName = useUniqueId('awsui-radio-');
+function InternalRadioGroup<TValue extends string>(
+  {
+    name,
+    value,
+    items,
+    ariaLabel,
+    ariaRequired,
+    ariaControls,
+    onChange,
+    __internalRootRef = null,
+    ...props
+  }: InternalRadioGroupProps<TValue>,
+  ref: React.Ref<RadioGroupProps.Ref>
+) {
+  const { ariaDescribedby, ariaLabelledby } = useFormFieldContext(props);
+  const baseProps = getBaseProps(props);
+  const generatedName = useUniqueId('awsui-radio-');
 
-    const [radioButtonRef, radioButtonRefIndex] = useRadioGroupForwardFocus(ref, items, value);
+  const [radioButtonRef, radioButtonRefIndex] = useRadioGroupForwardFocus(ref, items, value);
 
-    return (
-      <div
-        role="radiogroup"
-        aria-labelledby={ariaLabelledby}
-        aria-label={ariaLabel}
-        aria-describedby={ariaDescribedby}
-        aria-required={ariaRequired}
-        aria-controls={ariaControls}
-        {...baseProps}
-        className={clsx(baseProps.className, styles.root)}
-        ref={__internalRootRef}
-      >
-        {items &&
-          items.map((item, index) => (
-            <RadioButton
-              key={item.value}
-              ref={index === radioButtonRefIndex ? radioButtonRef : undefined}
-              checked={item.value === value}
-              name={name || generatedName}
-              value={item.value}
-              label={item.label}
-              description={item.description}
-              disabled={item.disabled}
-              onChange={onChange}
-              controlId={item.controlId}
-            />
-          ))}
-      </div>
-    );
-  }
-);
+  return (
+    <div
+      role="radiogroup"
+      aria-labelledby={ariaLabelledby}
+      aria-label={ariaLabel}
+      aria-describedby={ariaDescribedby}
+      aria-required={ariaRequired}
+      aria-controls={ariaControls}
+      {...baseProps}
+      className={clsx(baseProps.className, styles.root)}
+      ref={__internalRootRef}
+    >
+      {items &&
+        items.map((item, index) => (
+          <RadioButton
+            key={item.value}
+            ref={index === radioButtonRefIndex ? radioButtonRef : undefined}
+            checked={item.value === value}
+            name={name || generatedName}
+            value={item.value}
+            label={item.label}
+            description={item.description}
+            disabled={item.disabled}
+            onChange={onChange}
+            controlId={item.controlId}
+          />
+        ))}
+    </div>
+  );
+}
 
-export default InternalRadioGroup;
+export default React.forwardRef(InternalRadioGroup) as <TValue extends string>(
+  props: InternalRadioGroupProps<TValue> & { ref?: React.ForwardedRef<RadioGroupProps.Ref> }
+) => ReturnType<typeof InternalRadioGroup>;

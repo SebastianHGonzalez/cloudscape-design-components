@@ -8,10 +8,13 @@ import InternalRadioGroup from './internal';
 
 export { RadioGroupProps };
 
-const RadioGroup = React.forwardRef((props: RadioGroupProps, ref: React.Ref<RadioGroupProps.Ref>) => {
+function RadioGroup<TValue extends string>(props: RadioGroupProps<TValue>, ref: React.Ref<RadioGroupProps.Ref>) {
   const baseComponentProps = useBaseComponent('RadioGroup');
-  return <InternalRadioGroup ref={ref} {...props} {...baseComponentProps} />;
-});
+  return <InternalRadioGroup<TValue> ref={ref} {...props} {...baseComponentProps} />;
+}
 
 applyDisplayName(RadioGroup, 'RadioGroup');
-export default RadioGroup;
+
+export default React.forwardRef(RadioGroup) as <TValue extends string>(
+  props: RadioGroupProps<TValue> & { ref?: React.ForwardedRef<RadioGroupProps.Ref> }
+) => ReturnType<typeof RadioGroup>;
